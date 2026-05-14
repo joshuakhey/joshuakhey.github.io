@@ -1,45 +1,645 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Joshua Hey</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Joshua Hey | Data Analyst</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap');
+
+  :root {
+    --bg:      #f5f0e6;
+    --bg2:     #faf7f0;
+    --card:    #ffffff;
+    --border:  #2a2418;
+    --navy:    #1a1e38;
+    --gold:    #c9a53a;
+    --gold2:   #e8b84b;
+    --orange:  #d4721a;
+    --green:   #4a7c59;
+    --text:    #1a1712;
+    --muted:   #6b6150;
+    --font:    'Barlow', system-ui, sans-serif;
+    --font-h:  'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.6; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: var(--navy);
+    border-bottom: 3px solid var(--gold);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 2.5rem; height: 62px;
+  }
+  .nav-logo {
+    font-family: var(--font-h); font-weight: 900; font-size: 1.6rem;
+    letter-spacing: .04em; color: var(--gold); text-decoration: none;
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: #fff; }
+  .nav-links { display: flex; gap: .6rem; list-style: none; }
+  .nav-links a {
+    color: #fff; text-decoration: none; font-size: .78rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    border: 2px solid rgba(255,255,255,.25); border-radius: 6px;
+    padding: .35rem .9rem; transition: all .2s;
+  }
+  .nav-links a:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    padding: 80px 2rem 3rem;
+    background: var(--navy);
+  }
+  #hero::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(rgba(201,165,58,.15) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  #hero-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 1; width: 100%; height: 100%; }
+  .hero-inner {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    gap: 4rem; max-width: 1000px; width: 100%;
+    flex-wrap: wrap;
+  }
+  .hero-content { text-align: left; flex: 1; min-width: 280px; }
+  .hero-eyebrow {
+    display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--gold);
+    border: 2px solid var(--gold); border-radius: 4px;
+    padding: .3rem 1rem; margin-bottom: 1.6rem;
+    opacity: 0; animation: fadeUp .5s .2s forwards;
+  }
+  .hero-name {
+    font-family: var(--font-h); font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 900; line-height: .95; letter-spacing: -.01em;
+    color: #fff; text-transform: uppercase;
+    opacity: 0; animation: fadeUp .5s .4s forwards;
+  }
+  .hero-name .accent { color: var(--gold); }
+  .hero-tagline {
+    font-size: 1rem; color: rgba(255,255,255,.55); margin: 1.3rem 0 2.3rem;
+    opacity: 0; animation: fadeUp .5s .6s forwards;
+  }
+  #typed { color: var(--gold2); font-weight: 600; }
+  .cursor { display: inline-block; width: 2px; height: 1em; background: var(--gold2); margin-left: 2px; vertical-align: text-bottom; animation: blink 1s infinite; }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp .5s .8s forwards; }
+  .btn {
+    padding: .7rem 1.9rem; border-radius: 6px; font-size: .88rem; font-weight: 700;
+    text-decoration: none; text-transform: uppercase; letter-spacing: .08em;
+    transition: all .2s; cursor: pointer; border: 2px solid transparent;
+  }
+  .btn-primary { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+  .btn-primary:hover { background: var(--gold2); transform: translateY(-2px); }
+  .btn-outline { border-color: rgba(255,255,255,.4); color: #fff; }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+  /* PROFILE IMAGE */
+  .hero-photo-wrap {
+    flex-shrink: 0; opacity: 0; animation: fadeUp .6s .5s forwards;
+  }
+  .hero-photo {
+    width: 220px; height: 220px; border-radius: 50%;
+    border: 4px solid var(--gold);
+    box-shadow: 0 0 0 8px rgba(201,165,58,.15), 0 0 40px rgba(201,165,58,.2);
+    overflow: hidden; background: #2a2620;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; transition: box-shadow .3s;
+  }
+  .hero-photo:hover { box-shadow: 0 0 0 8px rgba(201,165,58,.3), 0 0 50px rgba(201,165,58,.35); }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .photo-placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    color: rgba(255,255,255,.35); text-align: center; padding: 1rem;
+  }
+  .photo-placeholder svg { opacity: .5; }
+  .photo-placeholder span { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  #photo-input { display: none; }
+
+  /* SECTION WRAPPER */
+  .section-wrap { padding: 5.5rem 2rem; max-width: 1020px; margin: 0 auto; }
+  .section-label {
+    font-size: .72rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: .4rem;
+  }
+  .section-title {
+    font-family: var(--font-h); font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 900; text-transform: uppercase; letter-spacing: .02em; margin-bottom: .8rem;
+  }
+  .divider {
+    width: 48px; height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--orange));
+    border-radius: 2px; margin-bottom: 2.8rem;
+  }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: start; }
+  .about-text p { color: var(--muted); margin-bottom: 1rem; font-size: .97rem; }
+  .about-text p strong { color: var(--text); }
+  .sports-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.2rem; }
+  .tag {
+    font-size: .75rem; font-weight: 700; padding: .3rem .85rem; border-radius: 4px;
+    border: 2px solid var(--border); background: transparent; color: var(--text);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .tag.gold { border-color: var(--gold); color: var(--gold); background: rgba(201,165,58,.08); }
+  /* stat tiles — Poeltl-style dashed grid cells */
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  .stat-cell {
+    border: 2px dashed var(--border); border-radius: 8px;
+    background: var(--card); padding: 1.3rem; text-align: center;
+  }
+  .stat-cell .num { font-family: var(--font-h); font-size: 2rem; font-weight: 900; color: var(--navy); line-height: 1; }
+  .stat-cell .lbl { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-top: .3rem; }
+
+  /* SKILLS */
+  #skills { background: #2e2a22; }
+  #skills .section-title { color: #fff; }
+  #skills .section-label { color: var(--gold); }
+  .skills-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.4rem; }
+  .skill-group {
+    border: 2px solid rgba(255,255,255,.12); border-radius: 10px;
+    padding: 1.8rem; background: rgba(255,255,255,.04);
+  }
+  /* column-header style like Poeltl grid */
+  .skill-group-header {
+    font-size: .7rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--gold); border-bottom: 2px solid rgba(201,165,58,.3);
+    padding-bottom: .7rem; margin-bottom: 1.4rem;
+  }
+  .skill-item { margin-bottom: 1.1rem; }
+  .skill-header { display: flex; justify-content: space-between; margin-bottom: .45rem; font-size: .88rem; font-weight: 600; color: #fff; }
+  .skill-pct { font-size: .78rem; color: rgba(255,255,255,.4); }
+  .bar-track { height: 5px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; width: 0; transition: width 1.3s cubic-bezier(.4,0,.2,1); }
+  .bar-fill.gold   { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+  .bar-fill.orange { background: linear-gradient(90deg, var(--orange), #f0963a); }
+  .bar-fill.green  { background: linear-gradient(90deg, var(--green), #6aab80); }
+
+  /* PROJECTS */
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.4rem; }
+  .project-card {
+    background: var(--card); border: 2px dashed var(--border); border-radius: 10px;
+    padding: 1.8rem; display: flex; flex-direction: column; gap: .8rem;
+    transition: border-color .2s, transform .2s, border-style .2s;
+  }
+  .project-card:hover { border-color: var(--gold); border-style: solid; transform: translateY(-3px); }
+  .project-card.placeholder { opacity: .5; }
+  .project-card.placeholder:hover { transform: none; border-color: var(--border); border-style: dashed; }
+  .proj-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .proj-icon { font-size: 1.8rem; }
+  .proj-link {
+    font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: .3rem .8rem; border-radius: 5px;
+    border: 2px solid var(--border); color: var(--text); text-decoration: none;
+    transition: all .2s;
+  }
+  .proj-link:hover { border-color: var(--gold); color: var(--gold); }
+  .proj-title { font-family: var(--font-h); font-size: 1.2rem; font-weight: 900; text-transform: uppercase; letter-spacing: .03em; }
+  .proj-desc { font-size: .87rem; color: var(--muted); flex: 1; }
+  .proj-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .3rem; }
+  .proj-tag {
+    font-size: .7rem; font-weight: 700; padding: .2rem .65rem; border-radius: 4px;
+    border: 1.5px solid var(--border); color: var(--muted); text-transform: uppercase; letter-spacing: .05em;
+  }
+
+  /* CONTACT */
+  #contact { background: #f0ebe0; }
+  #contact .section-title { color: var(--navy); }
+  #contact .section-label { color: var(--orange); }
+  #contact .subtitle { color: var(--muted); max-width: 500px; margin: -1.5rem auto 2.5rem; font-size: .95rem; }
+  .contact-links { display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; }
+  .contact-card {
+    background: #fff; border: 2px dashed var(--border);
+    border-radius: 8px; padding: 1.4rem 1.8rem; text-decoration: none; color: var(--text);
+    transition: all .2s; display: flex; align-items: center; gap: .9rem; min-width: 200px;
+  }
+  .contact-card:hover { border-color: var(--gold); border-style: solid; transform: translateY(-3px); }
+  .contact-icon { font-size: 1.4rem; }
+  .c-label { font-size: .68rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: .12em; }
+  .c-val { font-size: .9rem; font-weight: 600; color: var(--navy); }
+
+  footer {
+    text-align: center; padding: 1.8rem; background: #f0ebe0;
+    border-top: 2px solid rgba(42,36,24,.15);
+    color: var(--muted); font-size: .8rem; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity:0; transform: translateY(22px); } to { opacity:1; transform: translateY(0); } }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+  .reveal { opacity:0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
+  .reveal.visible { opacity:1; transform: translateY(0); }
+
+  @media (max-width: 680px) {
+    nav { padding: 0 1rem; }
+    .nav-links { gap: .4rem; }
+    .nav-links a { padding: .3rem .6rem; font-size: .7rem; }
+    .about-grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
-<body class="bg-black text-center p-10">
-  <header class="bg-black flex fixed w-full h-8 between top-0 left-0 justify-center">
-    <div class="relative text-center w-full">  
-      <div class="">
-        <div class="logo">
-          <a href="/home"><img src="" alt=""></a>
-        </div>
-        <h1 class="text-shadow-lg/30 inset-x-0 text-3xl font-bold text-primary1 text-center absolute">Joshua Hey</h1>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#hero">J.<span>Hey</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Data Analyst &amp; Scientist</span>
+      <h1 class="hero-name">Joshua<br><span class="accent">Hey</span></h1>
+      <p class="hero-tagline">
+        <span id="typed"></span><span class="cursor"></span>
+      </p>
+      <div class="hero-btns">
+        <a class="btn btn-primary" href="#projects">View Projects</a>
+        <a class="btn btn-outline" href="#contact">Get In Touch</a>
       </div>
     </div>
-  </header>
-
-  <div class="relative top-64 basketball bg-auto place-self-center size-20">
-    <div class="img">
-      <img src="images/basketball/bball2.png" alt="Basketball1" class="size-20 img">
+    <div class="hero-photo-wrap">
+      <div class="hero-photo" id="photo-circle" onclick="document.getElementById('photo-input').click()">
+        <img id="profile-img" src="" alt="Profile photo"/>
+        <div class="photo-placeholder" id="photo-ph">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          <span>Add Photo</span>
+        </div>
+      </div>
+      <input type="file" id="photo-input" accept="image/*"/>
     </div>
-    <ul class="links text-primary1">
-      <li class="about"></li>
-      <li class="projects"></li>
-    </ul>
   </div>
+</section>
 
-
-  <div class="about-container text-white ">
-    <div class="about">
-      <h3 class="font-bold text-shadow-lg/20">About Me</h3>
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-wrap reveal">
+    <p class="section-label">About Me</p>
+    <h2 class="section-title">Turning Data into Decisions</h2>
+    <div class="divider"></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm a <strong>Systems Design Engineering student at the University of Waterloo</strong> with a growing focus on data analytics, machine learning, and sports analytics. I enjoy building tools that transform raw data into clear, actionable insight.</p>
+        <p>My work spans <strong>business intelligence</strong> (Power BI, SQL, DAX) and <strong>data science</strong> (Python, R, Shiny), with a particular interest in applying these skills to <strong>sports performance and strategy</strong>. I've contributed to research in NFL tracking data analytics and built real-time visualization tools for coaching staff.</p>
+        <p>Outside of data work, sport is a big part of how I think — I'm passionate about <strong>basketball, volleyball, and football (soccer)</strong>, which naturally informs my analytical lens.</p>
+        <div class="sports-tags">
+          <span class="tag">🏀 Basketball</span>
+          <span class="tag">🏐 Volleyball</span>
+          <span class="tag">⚽ Football</span>
+          <span class="tag gold">🏒 Hockey Analytics</span>
+          <span class="tag gold">📊 Sports Data</span>
+        </div>
+      </div>
+      <div class="about-stats">
+        <div class="stat-cell"><div class="num">UW</div><div class="lbl">Systems Design Engineering</div></div>
+        <div class="stat-cell"><div class="num">3+</div><div class="lbl">Years Analytical Experience</div></div>
+        <div class="stat-cell"><div class="num">NFL</div><div class="lbl">Big Data Bowl Co-Author</div></div>
+        <div class="stat-cell"><div class="num">∞</div><div class="lbl">Curiosity for the Game</div></div>
+      </div>
     </div>
-
-
-
   </div>
+</section>
 
-  <footer class="bg-primary1 fixed w-full h-16 justify between bottom-0 left-0">
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-wrap reveal">
+    <p class="section-label">Skills</p>
+    <h2 class="section-title">Tools &amp; Technologies</h2>
+    <div class="divider"></div>
+    <div class="skills-groups">
+      <div class="skill-group">
+        <div class="skill-group-header">Core Strengths</div>
+        <div class="skill-item"><div class="skill-header"><span>SQL</span><span class="skill-pct">90%</span></div><div class="bar-track"><div class="bar-fill gold" data-w="90"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>Power BI</span><span class="skill-pct">88%</span></div><div class="bar-track"><div class="bar-fill gold" data-w="88"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>DAX</span><span class="skill-pct">85%</span></div><div class="bar-track"><div class="bar-fill gold" data-w="85"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>M (Power Query)</span><span class="skill-pct">82%</span></div><div class="bar-track"><div class="bar-fill gold" data-w="82"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>Excel</span><span class="skill-pct">88%</span></div><div class="bar-track"><div class="bar-fill gold" data-w="88"></div></div></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-header">Growing Skills</div>
+        <div class="skill-item"><div class="skill-header"><span>Python</span><span class="skill-pct">65%</span></div><div class="bar-track"><div class="bar-fill orange" data-w="65"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>R</span><span class="skill-pct">55%</span></div><div class="bar-track"><div class="bar-fill orange" data-w="55"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>Shiny (R / Python)</span><span class="skill-pct">60%</span></div><div class="bar-track"><div class="bar-fill orange" data-w="60"></div></div></div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-header">Learning</div>
+        <div class="skill-item"><div class="skill-header"><span>Machine Learning</span><span class="skill-pct">30%</span></div><div class="bar-track"><div class="bar-fill green" data-w="30"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>LSTM / Deep Learning</span><span class="skill-pct">20%</span></div><div class="bar-track"><div class="bar-fill green" data-w="20"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span>Spatial-Temporal Modelling</span><span class="skill-pct">25%</span></div><div class="bar-track"><div class="bar-fill green" data-w="25"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  </footer>
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-wrap reveal">
+    <p class="section-label">Projects</p>
+    <h2 class="section-title">What I've Built</h2>
+    <div class="divider"></div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="proj-top">
+          <span class="proj-icon">🏈</span>
+          <a class="proj-link" href="https://www.kaggle.com/competitions/nfl-big-data-bowl-2026" target="_blank">Competition ↗</a>
+        </div>
+        <div class="proj-title">Route Dominance Score</div>
+        <div class="proj-desc">Co-authored submission to the NFL Big Data Bowl 2026. Developed a two-stage model combining an XGBoost Expected Completion Probability baseline with an LSTM processing 50 frames of spatial-temporal tracking data per play — isolating individual wide receiver skill from environmental noise. Also built a Gaussian Spatial Influence model to quantify field ownership via velocity-weighted ellipses.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">Python</span>
+          <span class="proj-tag">XGBoost</span>
+          <span class="proj-tag">LSTM</span>
+          <span class="proj-tag">Spatial Modelling</span>
+          <span class="proj-tag">NFL</span>
+        </div>
+      </div>
+      <div class="project-card placeholder">
+        <div class="proj-top"><span class="proj-icon">📊</span></div>
+        <div class="proj-title">More Coming Soon</div>
+        <div class="proj-desc">Dashboards, Shiny apps, and analytics tools will be showcased here as they're completed.</div>
+        <div class="proj-tags">
+          <span class="proj-tag">Power BI</span>
+          <span class="proj-tag">Shiny</span>
+          <span class="proj-tag">R</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-wrap reveal" style="text-align:center;">
+    <p class="section-label">Contact</p>
+    <h2 class="section-title">Let's Connect</h2>
+    <div class="divider" style="margin:0 auto 1.2rem;"></div>
+    <p class="subtitle">Open to data analytics roles, sports analytics research, and interesting projects.</p>
+    <div class="contact-links">
+      <a class="contact-card" href="mailto:jhey@uwaterloo.ca">
+        <span class="contact-icon">✉️</span>
+        <div><div class="c-label">Email</div><div class="c-val">jhey@uwaterloo.ca</div></div>
+      </a>
+      <a class="contact-card" href="https://www.linkedin.com/in/joshua-hey-214173279/" target="_blank">
+        <span class="contact-icon">💼</span>
+        <div><div class="c-label">LinkedIn</div><div class="c-val">joshua-hey</div></div>
+      </a>
+      <a class="contact-card" href="https://github.com/joshuahey" target="_blank">
+        <span class="contact-icon">🐙</span>
+        <div><div class="c-label">GitHub</div><div class="c-val">joshuahey</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>Joshua Hey · Data Analyst · 2026</footer>
+
+<script>
+/* TYPED */
+const phrases = ['Turning Data into Insight.','Sports Analytics Enthusiast.','BI Developer & Data Scientist.','University of Waterloo Engineering.'];
+let pi=0, ci=0, del=false;
+function type() {
+  const ph = phrases[pi];
+  document.getElementById('typed').textContent = del ? ph.slice(0,ci--) : ph.slice(0,ci++);
+  if(!del && ci > ph.length) { del=true; setTimeout(type,1400); return; }
+  if(del && ci < 0) { del=false; pi=(pi+1)%phrases.length; ci=0; }
+  setTimeout(type, del ? 38 : 65);
+}
+type();
+
+/* PHOTO UPLOAD */
+document.getElementById('photo-input').addEventListener('change', e => {
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = document.getElementById('profile-img');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+    document.getElementById('photo-ph').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+
+/* HERO CANVAS — graphs + sports */
+(function(){
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0;
+
+  /* ---- data for decorative elements ---- */
+  const gold   = 'rgba(201,165,58,';
+  const orange = 'rgba(212,114,26,';
+  const white  = 'rgba(255,255,255,';
+
+  /* Line chart wave */
+  const lineVals = [.35,.5,.3,.65,.45,.72,.55,.8,.6,.9,.7,.85,.78];
+
+  /* Bar chart data */
+  const bars = [.4,.65,.5,.8,.6,.75,.55,.9,.7,.85];
+
+  /* Scatter dots */
+  const scatter = Array.from({length:22}, () => ({
+    x: Math.random(), y: Math.random(),
+    r: Math.random()*2+1.5,
+    vx:(Math.random()-.5)*.0003, vy:(Math.random()-.5)*.0003
+  }));
+
+  /* Floating sport balls — more of them, bigger, more visible */
+  const sports = [
+    {type:'basketball', x:.07,  y:.15, s:32, vx:.00018, vy:.00012, rot:0, rv:.003},
+    {type:'volleyball', x:.91,  y:.22, s:26, vx:-.00014, vy:.00016, rot:0, rv:-.004},
+    {type:'basketball', x:.78,  y:.78, s:22, vx:-.00016, vy:-.00013, rot:0, rv:.005},
+    {type:'volleyball', x:.18,  y:.82, s:28, vx:.00013, vy:-.00015, rot:0, rv:-.003},
+    {type:'basketball', x:.55,  y:.08, s:18, vx:.0001,  vy:.00018, rot:0, rv:.004},
+    {type:'volleyball', x:.42,  y:.88, s:20, vx:-.0001, vy:.00012, rot:0, rv:.003},
+    {type:'basketball', x:.93,  y:.58, s:16, vx:-.00015, vy:.0001, rot:0, rv:-.004},
+  ];
+
+  function resize() {
+    const hero = document.getElementById('hero');
+    W = canvas.width  = hero.offsetWidth;
+    H = canvas.height = hero.offsetHeight;
+  }
+
+  function drawBasketball(cx, cy, r, alpha) {
+    ctx.save();
+    ctx.strokeStyle = `rgba(212,114,26,${alpha})`;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+    // horizontal seam
+    ctx.beginPath(); ctx.moveTo(cx-r, cy); ctx.lineTo(cx+r, cy); ctx.stroke();
+    // curved seams
+    ctx.beginPath(); ctx.arc(cx, cy, r*.62, 0, Math.PI, false); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, r*.62, Math.PI, 0, false); ctx.stroke();
+    // vertical hint
+    ctx.beginPath(); ctx.moveTo(cx, cy-r); ctx.lineTo(cx, cy+r); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawVolleyball(cx, cy, r, alpha) {
+    ctx.save();
+    ctx.strokeStyle = `rgba(201,165,58,${alpha})`;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+    // three curved panels
+    ctx.beginPath(); ctx.moveTo(cx, cy-r); ctx.lineTo(cx, cy+r); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx - r*.18, cy, r, Math.PI*.08, Math.PI*.92); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx + r*.18, cy, r, Math.PI*1.08, Math.PI*1.92); ctx.stroke();
+    // horizontal band
+    ctx.beginPath(); ctx.moveTo(cx-r, cy); ctx.bezierCurveTo(cx-r*.5, cy-r*.3, cx+r*.5, cy-r*.3, cx+r, cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx-r, cy); ctx.bezierCurveTo(cx-r*.5, cy+r*.3, cx+r*.5, cy+r*.3, cx+r, cy); ctx.stroke();
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    t += .008;
+
+    /* -- LINE CHART — top-left, leaves right side open -- */
+    const lx = W*.04, ly = H*.07, lw = W*.48, lh = H*.32;
+    ctx.save();
+    ctx.strokeStyle = gold+'.22)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx, ly+lh); ctx.lineTo(lx+lw, ly+lh); ctx.stroke();
+    ctx.strokeStyle = gold+'.07)'; ctx.lineWidth = 1;
+    for(let i=1;i<=4;i++){
+      const gy = ly + (i/4)*lh;
+      ctx.beginPath(); ctx.moveTo(lx, gy); ctx.lineTo(lx+lw, gy); ctx.stroke();
+    }
+    ctx.strokeStyle = white+'.1)'; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    const lineVals2 = [.55,.4,.65,.35,.6,.45,.7,.38,.62,.5,.72,.44,.68];
+    lineVals2.forEach((v,i) => {
+      const x = lx + (i/(lineVals2.length-1))*lw;
+      const wave = Math.sin(t*.7 + i*.6)*.035;
+      const y = ly+lh - (v+wave)*lh*.85;
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    ctx.strokeStyle = gold+'.48)'; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    lineVals.forEach((v,i) => {
+      const x = lx + (i/(lineVals.length-1))*lw;
+      const wave = Math.sin(t + i*.5)*.04;
+      const y = ly+lh - (v+wave)*lh*.85;
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    ctx.fillStyle = gold+'.05)';
+    lineVals.forEach((v,i) => {
+      const x = lx+(i/(lineVals.length-1))*lw;
+      const wave = Math.sin(t+i*.5)*.04;
+      const y = ly+lh-(v+wave)*lh*.85;
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.lineTo(lx+lw, ly+lh); ctx.lineTo(lx, ly+lh); ctx.closePath(); ctx.fill();
+    ctx.restore();
+
+    /* -- BAR CHART — right side, vertically offset, doesn't start at top -- */
+    const bx = W*.56, by = H*.38, bw = W*.38, bh = H*.40;
+    const bW = (bw/bars.length) * .55;
+    ctx.save();
+    ctx.strokeStyle = orange+'.25)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx, by+bh); ctx.lineTo(bx+bw, by+bh); ctx.stroke();
+    ctx.strokeStyle = orange+'.07)'; ctx.lineWidth = 1;
+    for(let i=1;i<=4;i++){
+      const gy = by+(i/4)*bh;
+      ctx.beginPath(); ctx.moveTo(bx,gy); ctx.lineTo(bx+bw,gy); ctx.stroke();
+    }
+    bars.forEach((v,i) => {
+      const pulse = Math.sin(t*.8 + i*.4)*.04;
+      const h = (v+pulse)*bh*.88;
+      const x = bx + i*(bw/bars.length) + bw/(bars.length*2) - bW/2;
+      const grad = ctx.createLinearGradient(x, by+bh-h, x, by+bh);
+      grad.addColorStop(0, orange+'.5)');
+      grad.addColorStop(1, orange+'.1)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, by+bh-h, bW, h);
+      ctx.fillStyle = orange+'.65)';
+      ctx.fillRect(x, by+bh-h, bW, 2);
+    });
+    ctx.restore();
+
+    /* -- SCATTER — bottom-left, offset inward, leaves corners clear -- */
+    const sx = W*.08, sy = H*.60, sw = W*.32, sh = H*.30;
+    ctx.save();
+    ctx.strokeStyle = white+'.16)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, sy+sh); ctx.lineTo(sx+sw, sy+sh); ctx.stroke();
+    ctx.strokeStyle = white+'.05)'; ctx.lineWidth = 1;
+    for(let i=1;i<=3;i++){
+      const gy = sy+(i/3)*sh;
+      ctx.beginPath(); ctx.moveTo(sx,gy); ctx.lineTo(sx+sw,gy); ctx.stroke();
+    }
+    scatter.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>1) p.vx*=-1; if(p.y<0||p.y>1) p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(sx + p.x*sw, sy + p.y*sh, p.r+1, 0, Math.PI*2);
+      ctx.fillStyle = white+'.4)';
+      ctx.fill();
+    });
+    ctx.strokeStyle = white+'.2)'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,5]);
+    ctx.beginPath(); ctx.moveTo(sx+6, sy+sh-10); ctx.lineTo(sx+sw-6, sy+10); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    /* -- FLOATING SPORT BALLS -- */
+    sports.forEach(s => {
+      s.x += s.vx; s.y += s.vy; s.rot += s.rv;
+      if(s.x<.03||s.x>.97) s.vx*=-1;
+      if(s.y<.03||s.y>.97) s.vy*=-1;
+      const cx = s.x*W, cy = s.y*H, r = s.s;
+      ctx.save();
+      ctx.translate(cx, cy); ctx.rotate(s.rot); ctx.translate(-cx, -cy);
+      if(s.type==='basketball')  drawBasketball(cx, cy, r, .28);
+      else if(s.type==='soccer') drawSoccer(cx, cy, r, .25);
+      else                       drawVolleyball(cx, cy, r, .22);
+      ctx.restore();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+/* SCROLL REVEAL */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: .12});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+/* SKILL BARS */
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.querySelectorAll('.bar-fill').forEach(b => b.style.width = b.dataset.w + '%');
+      barObs.unobserve(e.target);
+    }
+  });
+}, {threshold: .2});
+document.querySelectorAll('.skill-group').forEach(g => barObs.observe(g));
+</script>
 </body>
 </html>
