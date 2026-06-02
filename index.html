@@ -48,8 +48,6 @@
   .hero-photo-wrap{flex-shrink:0;opacity:0;animation:fadeUp .6s .5s forwards;}
   .hero-photo{width:300px;height:300px;border-radius:50%;border:4px solid var(--gold);box-shadow:0 0 0 8px rgba(201,165,58,.15),0 0 40px rgba(201,165,58,.2);overflow:hidden;background:#2a2620;display:flex;align-items:center;justify-content:center;}
   .hero-photo img{width:100%;height:100%;object-fit:cover;}
-  .photo-placeholder{display:flex;flex-direction:column;align-items:center;gap:.5rem;color:rgba(255,255,255,.3);text-align:center;padding:1rem;}
-  .photo-placeholder span{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
 
   /* SHARED LAYOUT */
   .section-wrap{padding:5.5rem 2rem;max-width:1020px;margin:0 auto;}
@@ -174,13 +172,7 @@
     <div class="hero-photo-wrap">
       <div class="hero-photo">
         <img src="images/profile.png" alt="Joshua Hey"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-        <div class="photo-placeholder" style="display:none">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-          </svg>
-          <span>profile.png</span>
-        </div>
+          onerror="this.closest('.hero-photo-wrap').style.display='none'"/>
       </div>
     </div>
   </div>
@@ -201,7 +193,7 @@
           <span class="tag">🏀 Basketball</span>
           <span class="tag">🏐 Volleyball</span>
           <span class="tag">⚽ Football</span>
-          <span class="tag">🏦 Financial</span>          
+          <span class="tag">🏦 Financial</span>
           <span class="tag gold">📊 Sports Data</span>
         </div>
       </div>
@@ -344,7 +336,6 @@
             <div class="skill-header"><span class="skill-name">Shiny</span><span class="skill-pct">Familiar</span></div>
             <div class="bar-track"><div class="bar-fill green" data-w="35"></div></div>
           </div>
-
         </div>
       </div>
 
@@ -363,7 +354,7 @@
       <div class="project-card">
         <div class="proj-img-wrap">
           <img src="images/rds-project.png" alt="Route Dominance Score"
-            onerror="this.parentElement.innerHTML='<div class=proj-img-ph>🏈</div>'"/>
+            onerror="this.closest('.proj-img-wrap').style.display='none'"/>
         </div>
         <div class="proj-body">
           <div class="proj-top">
@@ -381,7 +372,7 @@
       <div class="project-card">
         <div class="proj-img-wrap">
           <img src="images/rapm-project.png" alt="Combine RAPM Analysis"
-            onerror="this.parentElement.innerHTML='<div class=proj-img-ph>🏀</div>'"/>
+            onerror="this.closest('.proj-img-wrap').style.display='none'"/>
         </div>
         <div class="proj-body">
           <div class="proj-top">
@@ -399,7 +390,7 @@
       <div class="project-card">
         <div class="proj-img-wrap">
           <img src="images/apple-stock-project.png" alt="Apple Stock Prediction"
-            onerror="this.parentElement.innerHTML='<div class=proj-img-ph>📈</div>'"/>
+            onerror="this.closest('.proj-img-wrap').style.display='none'"/>
         </div>
         <div class="proj-body">
           <div class="proj-top">
@@ -417,7 +408,7 @@
       <div class="project-card">
         <div class="proj-img-wrap">
           <img src="images/sec-audit-project.png" alt="SEC Audit"
-            onerror="this.parentElement.innerHTML='<div class=proj-img-ph>🔍</div>'"/>
+            onerror="this.closest('.proj-img-wrap').style.display='none'"/>
         </div>
         <div class="proj-body">
           <div class="proj-top">
